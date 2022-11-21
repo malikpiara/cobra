@@ -13,6 +13,7 @@ var allowCrossDomain = (req: Request, res: Response, next: NextFunction) => {
 }
 
 const app: Express = express();
+const port = process.env.PORT;
 
 app.use(allowCrossDomain);
 
@@ -61,3 +62,7 @@ app.post("/post/:post_id/:author/:content", function(req, res) {
   )
   res.send(comments)
 })
+
+app.listen(port, () => {
+  console.log(`[server]: Server is running at https://localhost:${port}`);
+});
