@@ -63,6 +63,5 @@ app.post("/post/:post_id/:author/:content", function(req, res) {
   res.send(comments)
 })
 
-app.listen(port, () => {
-  console.log(`[server]: Server is running at https://localhost:${port}`);
-});
+// start express server
+app.listen(port)
