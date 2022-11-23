@@ -1,5 +1,8 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import express, { Express, Request, Response, NextFunction, response } from 'express';
 import dotenv from 'dotenv';
+import "reflect-metadata";
+import { Comment } from "./entity/Comment"
+import { myDataSource } from "./data-source"
 
 dotenv.config();
 
@@ -12,55 +15,43 @@ var allowCrossDomain = (req: Request, res: Response, next: NextFunction) => {
   next();
 }
 
+// Establish database connection
+myDataSource
+    .initialize()
+    .then(() => {
+        console.log("Data Source has been initialized!")
+    })
+    .catch((err) => {
+        console.error("Error during Data Source initialization:", err)
+    })
+
+// Create and setup Express App
 const app: Express = express();
+// I'm seeing this everywhere: app.use(express.json()). Why?
 const port = process.env.PORT;
 
 app.use(allowCrossDomain);
 
-// Temporary data structure for comments.
-// TODO: Move to a DB.
-const comments= 
-  [
-    {
-      'id': 'c00001',
-      'author': 'John Green',
-      'content': 'Always on point, needed a jolt here as I feel in between two of these jobs, just need to embrace where I am and keep learning and growing.',
-      'post_id': 'copy'
-    },
-    {
-      'id': 'c00002',
-      'author': 'Hank Green',
-      'content': 'Always on point, needed a bolt here as I feel in between two of these jobs, just need to embrace where I am and keep learning and thriving.',
-      'post_id': 'copy'
-    }
-  ];
-
 // START OF ROUTES
-app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server is running.');
-});
+app.get("/comments", async (req: Request, res: Response) => {
+  const comments = await myDataSource.manager.find(Comment)
+  res.json(comments)
+})
 
-app.get('/comments', (req: Request, res: Response) => {
-  const commentsToJSON = JSON.stringify(comments);
-  res.send(commentsToJSON);
-});
+app.get("/comments/:post_id", async (req: Request, res: Response) => {
+  const comments = await myDataSource.manager.findBy(Comment, {
+    post_id: req.params.post_id
+  })
+  res.json(comments)
+})
 
-app.get('/comments/:post_id', (req: Request, res: Response) => {
-  const commentsToJSON = JSON.stringify(comments.filter(comment => comment.post_id == req.params.post_id));
-  res.send(commentsToJSON);
-});
-
-// Posting comments
-app.post("/post/:post_id/:author/:content", function(req, res) {
-  comments.push(
-    {
-      'id': 'c00003',
-      'author': req.params.author,
-      'content': req.params.content,
-      'post_id': req.params.post_id
-    }
-  )
-  res.send(comments)
+app.put("/comments/:post_id/:author/:content", async (req: Request, res: Response) => {
+  const comment = new Comment()
+  comment.post_id = req.params.post_id;
+  comment.author = req.params.author;
+  comment.content = req.params.content;
+  await myDataSource.manager.save(comment)
+  res.status(200).send("Comment was posted successfully!")
 })
 
 // start express server
