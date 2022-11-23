@@ -11,4 +11,7 @@ export const myDataSource = new DataSource({
     entities: [Comment],
     logging: false,
     synchronize: true,
+    ssl: {
+        rejectUnauthorized: false,
+      }
 })
