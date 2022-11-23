@@ -3,6 +3,7 @@ import { Comment } from "./entity/Comment";
 
 export const myDataSource = new DataSource({
     type: "postgres",
+    url: process.env.DATABASE_URL,
     host: process.env.POSTGRES_WRITER_HOST,
     port: 5432,
     username: process.env.POSTGRES_USERNAME,
