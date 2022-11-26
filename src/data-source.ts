@@ -12,6 +12,7 @@ export const myDataSource = new DataSource({
     entities: [Comment],
     logging: false,
     synchronize: true,
+    // Comment when in development mode.
     ssl: {
         rejectUnauthorized: false,
       }
