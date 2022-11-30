@@ -12,7 +12,7 @@ dotenv.config();
 // Allowing POST requests from everywhere, including localhost.
 // Warning: Using the wildcard to allow all sites to access a private API is a bad idea.
 var allowCrossDomain = (req: Request, res: Response, next: NextFunction) => {
-  res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN);
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', "true");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'authorization');
