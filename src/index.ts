@@ -2,10 +2,8 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import { auth, requiredScopes } from 'express-oauth2-jwt-bearer';
 import dotenv from 'dotenv';
 import "reflect-metadata";
-import { Comment } from "./entity/Comment"
-import { myDataSource } from "./data-source"
-const cookieParser = require("cookie-parser");
-import { auth as authOi, requiresAuth } from 'express-openid-connect';
+import { Comment } from "./entity/Comment";
+import { myDataSource } from "./data-source";
 
 dotenv.config();
 
@@ -15,7 +13,7 @@ var allowCrossDomain = (req: Request, res: Response, next: NextFunction) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Credentials', "true");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'authorization');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, authorization');
   next();
 }
 
@@ -31,38 +29,11 @@ myDataSource
 
 // Create and setup Express App
 const app: Express = express();
-app.use(cookieParser());
 
 // I'm seeing this everywhere: app.use(express.json()). Why?
 const port = process.env.PORT;
 
 app.use(allowCrossDomain);
-
-// Config Auth0
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  baseURL: process.env.AUTH0_BASE_URL,
-  clientID: process.env.AUTH0_CLIENT_ID,
-  issuerBaseURL: process.env.ISSUER_BASE_URL,
-  secret: process.env.AUTH0_SECRET
-};
-
-// The `auth` router attaches /login, /logout
-// and /callback routes to the baseURL
-app.use(authOi(config));
-
-// req.oidc.isAuthenticated is provided from the auth router
-app.get('/', (req, res) => {
-  res.send(
-    req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out'
-  )
-});
-
-// The /profile route will show the user profile as JSON
-app.get('/profile', requiresAuth(), (req, res) => {
-  res.send(JSON.stringify(req.oidc.user, null, 2));
-});
 
 // Going through Auth0 Quickstart from here until line 67.
 
@@ -82,7 +53,7 @@ app.get('/api/public', (req: Request, res: Response) => {
 
 // This route needs authentication
 // console.log(req.cookies.appSession)
-app.get('/api/private', requiresAuth(), (req: Request, res: Response) => {
+app.get('/api/private', checkJwt, (req: Request, res: Response) => {
   //res.setHeader('authorization', req.cookies.appSession)
   res.json({
     message: 'Hello from a private endpoint! You need to be authenticated to see this.'

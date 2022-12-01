@@ -13,7 +13,7 @@ export const myDataSource = new DataSource({
     logging: false,
     synchronize: true,
     // Comment when in development mode.
-    ssl: {
+    /* ssl: {
         rejectUnauthorized: false,
-      }
+      } */
 })
