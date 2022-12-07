@@ -52,9 +52,7 @@ app.get('/api/public', (req: Request, res: Response) => {
 });
 
 // This route needs authentication
-// console.log(req.cookies.appSession)
 app.get('/api/private', checkJwt, (req: Request, res: Response) => {
-  //res.setHeader('authorization', req.cookies.appSession)
   res.json({
     message: 'Hello from a private endpoint! You need to be authenticated to see this.'
   });
@@ -91,8 +89,8 @@ app.get("/comment/:id", async (req: Request, res: Response) => {
   res.json(comments)
 })
 
-// TODO: Protect endpoint.
-app.put("/delete/comment/:id", async (req: Request, res: Response) => {
+// TODO: Create scoping so that only admins can call this endpoint.
+app.put("/delete/comment/:id", checkJwt, async (req: Request, res: Response) => {
   await myDataSource
     .createQueryBuilder()
     .update(Comment)
