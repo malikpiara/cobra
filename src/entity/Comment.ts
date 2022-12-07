@@ -3,14 +3,17 @@ import { Entity, PrimaryColumn, Column, PrimaryGeneratedColumn, BaseEntity } fro
 @Entity()
 export class Comment extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id?: number;
+    id?: number
 
     @Column({default: "test"})
-    post_id?: string;
+    post_id?: string
 
     @Column()
-    author?: string;
+    author?: string
 
     @Column("text")
-    content?: string;
+    content?: string
+
+    @Column({default: false})
+    isDeleted?: boolean
 }

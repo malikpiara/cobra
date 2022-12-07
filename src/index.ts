@@ -74,11 +74,32 @@ app.get("/comments", async (req: Request, res: Response) => {
   res.json(comments)
 })
 
+// Finding all comments for a given Moonwith blog post.
 app.get("/comments/:post_id", async (req: Request, res: Response) => {
-  const comments = await myDataSource.manager.findBy(Comment, {
-    post_id: req.params.post_id
-  })
+  const comments = await myDataSource.manager.find(Comment, {
+    where: {post_id: req.params.post_id, isDeleted: false}
+  });
   res.json(comments)
+})
+
+app.get("/comment/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const comments = await myDataSource.manager.findOne(Comment, {
+    where: {id: parseInt(id)}
+  }
+  );
+  res.json(comments)
+})
+
+// TODO: Protect endpoint.
+app.put("/delete/comment/:id", async (req: Request, res: Response) => {
+  await myDataSource
+    .createQueryBuilder()
+    .update(Comment)
+    .set({ isDeleted: true })
+    .where("id = :id", { id: req.params.id })
+    .execute()
+    res.status(200).send("Comment was deleted successfully!")
 })
 
 app.put("/comments/:post_id/:author/:content", async (req: Request, res: Response) => {
