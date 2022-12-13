@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, PrimaryGeneratedColumn, BaseEntity } from "typeorm";
+import { Entity, PrimaryColumn, Column, PrimaryGeneratedColumn, CreateDateColumn, BaseEntity } from "typeorm";
 
 @Entity()
 export class Comment extends BaseEntity {
@@ -16,4 +16,7 @@ export class Comment extends BaseEntity {
 
     @Column({default: false})
     isDeleted?: boolean
+
+    @CreateDateColumn({default: Date.now()})
+    createdAt?: Date
 }
