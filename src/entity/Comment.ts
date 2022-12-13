@@ -8,6 +8,10 @@ export class Comment extends BaseEntity {
     @Column({default: "test"})
     post_id?: string
 
+    // Storing user_id fetched from Auth0
+    @Column({default: ""})
+    user_id?: string
+
     @Column()
     author?: string
 
