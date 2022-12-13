@@ -17,6 +17,6 @@ export class Comment extends BaseEntity {
     @Column({default: false})
     isDeleted?: boolean
 
-    @CreateDateColumn({default: Date.now()})
+    @CreateDateColumn()
     createdAt?: Date
 }
