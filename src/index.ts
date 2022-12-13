@@ -68,14 +68,17 @@ app.get('/api/private-scoped', checkJwt, checkScopes, function(req, res) {
 
 // START OF ROUTES
 app.get("/comments", async (req: Request, res: Response) => {
-  const comments = await myDataSource.manager.find(Comment)
+  const comments = await myDataSource.manager.find(Comment, {
+    order: {createdAt: "DESC"}
+  })
   res.json(comments)
 })
 
 // Finding all comments for a given Moonwith blog post.
 app.get("/comments/:post_id", async (req: Request, res: Response) => {
   const comments = await myDataSource.manager.find(Comment, {
-    where: {post_id: req.params.post_id, isDeleted: false}
+    where: {post_id: req.params.post_id, isDeleted: false},
+    order: {createdAt: "DESC"}
   });
   res.json(comments)
 })
