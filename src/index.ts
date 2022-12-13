@@ -100,7 +100,7 @@ app.put("/delete/comment/:id", checkJwt, async (req: Request, res: Response) => 
     res.status(200).send("Comment was deleted successfully!")
 })
 
-app.put("/comments/:post_id/:author/:content", async (req: Request, res: Response) => {
+app.post("/comments/:post_id/:author/:content", checkJwt, async (req: Request, res: Response) => {
   const comment = new Comment()
   comment.post_id = req.params.post_id;
   comment.author = req.params.author;
