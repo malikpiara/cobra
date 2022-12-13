@@ -100,9 +100,10 @@ app.put("/delete/comment/:id", checkJwt, async (req: Request, res: Response) => 
     res.status(200).send("Comment was deleted successfully!")
 })
 
-app.post("/comments/:post_id/:author/:content", checkJwt, async (req: Request, res: Response) => {
+app.post("/comments/:post_id/:user_id/:author/:content", checkJwt, async (req: Request, res: Response) => {
   const comment = new Comment()
   comment.post_id = req.params.post_id;
+  comment.user_id = req.params.user_id;
   comment.author = req.params.author;
   comment.content = req.params.content;
   await myDataSource.manager.save(comment)
