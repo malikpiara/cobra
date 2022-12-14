@@ -110,7 +110,7 @@ app.post("/comments/:post_id/:user_id/:author/:content", checkJwt, async (req: R
   comment.author = req.params.author;
   comment.content = req.params.content;
   await myDataSource.manager.save(comment)
-  res.status(200).send("Comment was posted successfully!")
+  res.status(200).send({response:"Comment was posted successfully!"})
 })
 
 // start express server
