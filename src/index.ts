@@ -131,11 +131,15 @@ app.get("/likes/:postId", async (req: Request, res: Response) => {
 // I should check if the userId is already there
 // to avoid duplicated likes?
 app.post("/likes/:postId/:userId", checkJwt, async (req: Request, res: Response) => {
-  const like = new Like()
-  like.postId = req.params.postId;
-  like.userId = req.params.userId;
-  await myDataSource.manager.save(like)
-  res.status(200).send({response:"Like was posted successfully."})
+  try {
+    const like = new Like()
+    like.postId = req.params.postId;
+    like.userId = req.params.userId;
+    await myDataSource.manager.save(like)
+    res.status(200).send({response:"Like was posted successfully."})
+  } catch(error) {
+    res.status(500).send({response: "Error. There's already a Like entry with the same userId and postId."})
+  }
 })
 
 // This endpoint updates the like status for when
