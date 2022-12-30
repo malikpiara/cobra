@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Unique, BaseEntity, CreateDateColumn } from "typeorm";
 
 @Entity()
+@Unique(["userId"])
 export class Like extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number
