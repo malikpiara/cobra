@@ -3,6 +3,7 @@ import { auth, requiredScopes } from 'express-oauth2-jwt-bearer';
 import dotenv from 'dotenv';
 import "reflect-metadata";
 import { Comment } from "./entity/Comment";
+import { Like } from "./entity/Like";
 import { myDataSource } from "./data-source";
 
 dotenv.config();
@@ -111,6 +112,42 @@ app.post("/comments/:post_id/:user_id/:author/:content", checkJwt, async (req: R
   comment.content = req.params.content;
   await myDataSource.manager.save(comment)
   res.status(200).send({response:"Comment was posted successfully!"})
+})
+
+// START of Like
+app.get("/likes", async (req: Request, res: Response) => {
+  const Likes = await myDataSource.manager.find(Like)
+  res.json(Likes)
+})
+
+// Finding all likes for a given Moonwith blog post.
+app.get("/likes/:postId", async (req: Request, res: Response) => {
+  const likes = await myDataSource.manager.find(Like, {
+    where: {postId: req.params.postId, isRemoved: false}
+  });
+  res.json(likes)
+})
+
+// I should check if the userId is already there
+// to avoid duplicated likes?
+app.post("/likes/:postId/:userId", checkJwt, async (req: Request, res: Response) => {
+  const like = new Like()
+  like.postId = req.params.postId;
+  like.userId = req.params.userId;
+  await myDataSource.manager.save(like)
+  res.status(200).send({response:"Like was posted successfully."})
+})
+
+// This endpoint updates the like status for when
+// a user decides to remove a like from a blog post.
+app.put("/likes/:id", checkJwt, async (req: Request, res: Response) => {
+  await myDataSource
+    .createQueryBuilder()
+    .update(Like)
+    .set({ isRemoved: true  })
+    .where("id = :id", { id: req.params.id })
+    .execute()
+    res.status(200).send("Success!")
 })
 
 // start express server
