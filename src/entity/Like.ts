@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique, BaseEntity, CreateDateColumn } from "typeorm";
 
 @Entity()
-@Unique(["userId"])
+@Unique(["userId", "postId"])
 export class Like extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number
