@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import { Comment } from "./entity/Comment";
+import { Like } from "./entity/Like";
 
 export const myDataSource = new DataSource({
     type: "postgres",
@@ -9,7 +10,7 @@ export const myDataSource = new DataSource({
     username: process.env.POSTGRES_USERNAME,
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DATABASE,
-    entities: [Comment],
+    entities: [Comment, Like],
     logging: false,
     synchronize: true,
     // Comment when in development mode.
