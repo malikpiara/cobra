@@ -150,6 +150,7 @@ app.delete("/likes/:id", checkJwt, async (req: Request, res: Response) => {
     //.update(Like)
     //.set({ isRemoved: true  })
     .delete()
+    .from(Like)
     .where("id = :id", { id: req.params.id })
     .execute()
     res.status(200).send("Success!")
