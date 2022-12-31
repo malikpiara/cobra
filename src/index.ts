@@ -144,11 +144,12 @@ app.post("/likes/:postId/:userId", checkJwt, async (req: Request, res: Response)
 
 // This endpoint updates the like status for when
 // a user decides to remove a like from a blog post.
-app.put("/likes/:id", checkJwt, async (req: Request, res: Response) => {
+app.delete("/likes/:id", checkJwt, async (req: Request, res: Response) => {
   await myDataSource
     .createQueryBuilder()
-    .update(Like)
-    .set({ isRemoved: true  })
+    //.update(Like)
+    //.set({ isRemoved: true  })
+    .delete()
     .where("id = :id", { id: req.params.id })
     .execute()
     res.status(200).send("Success!")
