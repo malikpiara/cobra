@@ -101,7 +101,7 @@ app.put("/delete/comment/:id", checkJwt, async (req: Request, res: Response) => 
     .set({ isDeleted: true })
     .where("id = :id", { id: req.params.id })
     .execute()
-    res.status(200).send("Comment was deleted successfully!")
+    res.status(200).send({response: "Comment was deleted successfully!"})
 })
 
 app.post("/comments/:post_id/:user_id/:author/:content", checkJwt, async (req: Request, res: Response) => {
@@ -153,7 +153,7 @@ app.delete("/likes/:id", checkJwt, async (req: Request, res: Response) => {
     .from(Like)
     .where("id = :id", { id: req.params.id })
     .execute()
-    res.status(200).send("Success!")
+    res.status(200).send({response: "Success! Like was removed."})
 })
 
 // start express server
